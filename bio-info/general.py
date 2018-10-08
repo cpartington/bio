@@ -74,7 +74,7 @@ def number_to_pattern(num, k):
     """
     if k == 1:
         return _number_to_symbol_(num)
-    prefix_num = math.floor(num / 4)
+    prefix_num = int(num / 4)
     remainder = num % 4
     symbol = _number_to_symbol_(remainder)
     prefix_pattern = number_to_pattern(prefix_num, k - 1)
