@@ -1,1 +1,1 @@
-name = "bio-info"
+name = "bio_info"
