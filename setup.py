@@ -7,5 +7,7 @@ setup(name="bio_info",
       author="Christie Partington",
       packages=["bio_info"],
       install_requires=[
-          "progressbar2"
+          "progressbar2",
+          "tabulate",
+          "numpy"
       ])
