@@ -8,6 +8,5 @@ setup(name="bio_info",
       packages=["bio_info"],
       install_requires=[
           "progressbar2",
-          "tabulate",
           "numpy"
       ])

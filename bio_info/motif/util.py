@@ -1,4 +1,5 @@
-from .profile import *
+from .profile import Profile
+from ..general import *
 
 
 def entropy_score(motif_list):
@@ -9,10 +10,10 @@ def entropy_score(motif_list):
     :return: the sum of the entropy scores for each index / column of the DNA strings
     """
     ent_score = 0
-    profile = profile_matrix(motif_list)
+    profile = Profile(motif_list)
     for i in range(len(profile[0])):
-        ent_score += get_entropy(profile[0][i], profile[1][i],
-                                 profile[2][i], profile[3][i])
+        ent_score += get_entropy(profile.get(0, i), profile.get(1, i),
+                                 profile.get(2, i), profile.get(3, i))
     return ent_score
 
 
@@ -37,9 +38,9 @@ def kmer_profile_probability(profile, kmer):
     :param kmer: the DNA string
     :return: the probability of :param kmer
     """
-    prob = profile[pattern_to_number(kmer[0])][0]
+    prob = profile.get(row=pattern_to_number(kmer[0]), col=0)
     for i in range(1, len(kmer)):
-        prob *= profile[pattern_to_number(kmer[i])][i]
+        prob *= profile.get(row=pattern_to_number(kmer[i]), col=i)
     return prob
 
 

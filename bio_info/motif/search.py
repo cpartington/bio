@@ -15,13 +15,17 @@ def find_profile_probable_kmer(profile, k, dna):
     :param dna: the DNA sequence to search
     :return: the k-mer in :param dna: with the highest probability
     """
+    if type(profile) != Profile:
+        # TODO throw error
+        print("profile must be of type Profile.")
+        return
     index = 0
     top_prob = 0
     for i in range(len(dna) - k+1):
         pattern = dna[i:i+k]
-        prob = profile[pattern_to_number(pattern[0])][0]
+        prob = profile.get(row=pattern_to_number(pattern[0]), col=0)
         for j in range(1, len(pattern)):
-            prob *= profile[pattern_to_number(pattern[j])][j]
+            prob *= profile(row=pattern_to_number(pattern[j]), col=j)
         if prob > top_prob:
             top_prob = prob
             index = i
@@ -45,7 +49,7 @@ def greedy_motif_search(k, dna_list, scoring='entropy'):
     for i in range(len(dna_list[0]) - k+1):  # for each k-mer in first DNA string
         motif_list[0] = dna_list[0][i:i + k]
         for j in range(1, t):
-            profile = profile_matrix(motif_list[:j])
+            profile = Profile(motif_list[:j])
             motif_list[j] = (find_profile_probable_kmer(
                               profile, k, dna_list[j]))
         # Get motif list score
@@ -95,7 +99,7 @@ def _randomized_motif_search_(dna_list, k, score):
     else:
         b_score = mismatch_score(best_motifs)
     while True:
-        profile = profile_matrix(motifs)
+        profile = Profile(motifs)
         # Get profile-most-probable k-mer of each DNA sequence
         motifs.clear()
         for dna in dna_list:
@@ -154,7 +158,7 @@ def _gibbs_sampler_(dna_list, k, score, n):
         # Randomly remove one string
         i = random.randint(0, t-1)  # choose random string to remove
         # Generate profile
-        profile = profile_matrix(motifs[:i] + motifs[i + 1:])
+        profile = Profile(motifs[:i] + motifs[i + 1:])
         # Generate probabilities for removed string
         removed = dna_list[i]
         probabilities = list()
