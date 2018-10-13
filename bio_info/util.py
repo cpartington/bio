@@ -178,4 +178,31 @@ def find_approximate_match_indexes(dna, pattern, d):
         substr = dna[i:i + k]
         if hamming_distance(pattern, substr) <= d:
             indexes.append(i)
-    return indexes        
+    return indexes
+
+
+def reverse_complement(dna):
+    """
+    Find the reverse complement of a given DNA string.
+
+    :param dna: the string of DNA
+    :return: the reverse complement of :param dna
+    """
+    tmp = "U"
+
+    # Swap A & T
+    c_dna = dna.replace("A", tmp)
+    c_dna = c_dna.replace("T", "A")
+    c_dna = c_dna.replace(tmp, "T")
+
+    # Swap C & G
+    c_dna = c_dna.replace("C", tmp)
+    c_dna = c_dna.replace("G", "C")
+    c_dna = c_dna.replace(tmp, "G")
+
+    # Reverse string
+    rc_dna = ""
+    for i in range(len(c_dna)):
+        rc_dna += c_dna[len(c_dna) - i - 1]
+
+    return rc_dna

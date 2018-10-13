@@ -1,5 +1,5 @@
 from .profile import Profile
-from ..general import *
+from ..util import *
 
 
 def entropy_score(motif_list):

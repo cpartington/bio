@@ -1,3 +1,7 @@
+from ..util import *
+import re
+
+
 def get_kmer_count_dict(dna, k, precision='exact', d=None):
     """
     Creates a dictionary of counts for each k-mer in a string.
@@ -53,34 +57,7 @@ def get_kmer_count_dict(dna, k, precision='exact', d=None):
 
     # Return dictionary of existing k-mers and their counts
     return k_mers, largest_count
-    
-    
-def reverse_complement(dna):
-    """
-    Find the reverse complement of a given DNA string.
-    
-    :param dna: the string of DNA
-    :return: the reverse complement of :param dna
-    """
-    tmp = "U"
 
-    # Swap A & T
-    c_dna = dna.replace("A", tmp)
-    c_dna = c_dna.replace("T", "A")
-    c_dna = c_dna.replace(tmp, "T")
-
-    # Swap C & G
-    c_dna = c_dna.replace("C", tmp)
-    c_dna = c_dna.replace("G", "C")
-    c_dna = c_dna.replace(tmp, "G")
-
-    # Reverse string
-    rc_dna = ""
-    for i in range(len(c_dna)):
-        rc_dna += c_dna[len(c_dna) - i - 1]
-
-    return rc_dna
-    
     
 def find_pattern_clumps(dna, k, L, t):
     """

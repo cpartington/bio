@@ -1,4 +1,4 @@
-from ..general import *
+from ..util import *
 
 
 class Profile:
