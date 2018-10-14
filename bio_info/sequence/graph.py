@@ -1,3 +1,6 @@
+from .util import *
+
+
 def overlap_graph(pattern_list):
     adjacencies = dict()
 
@@ -15,3 +18,20 @@ def overlap_graph(pattern_list):
                 adjacencies.get(pattern).append(p)
 
     return adjacencies
+
+
+def de_brujin_string(k, dna):
+    adj = dict()
+    edges = kmer_composition(k, dna)
+    # Add first k-mer
+    prefix = edges[0][:-1]
+    suffix = edges[0][1:]
+    adj[prefix] = list()
+    adj.get(prefix).append(suffix)
+    for i in range(1, len(edges)):
+        prefix = suffix
+        if prefix not in adj:
+            adj[prefix] = list()
+        suffix = edges[i][1:]
+        adj.get(prefix).append(suffix)
+    return adj
