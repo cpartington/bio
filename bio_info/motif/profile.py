@@ -10,7 +10,9 @@ class Profile:
         elif type(val) == int:
             self.profile = self.from_count(motif_list)
         elif type(val) == float:
-            self.profile = self.from_profile(motif_list)
+            self.profile = motif_list
+        self.m = 4
+        self.n = len(motif_list[0])
 
     def from_dna_list(self, motif_list):
         """
@@ -52,11 +54,15 @@ class Profile:
 
         return profile
 
-
-    def from_profile(self, profile):
-        return profile
-
     def get(self, row=None, col=None):
+        """
+        Gets the data at the specified index(es).
+
+        :param row: the row index
+        :param col: the column index
+        :return: a single value if row and column are specified
+                 a list if only one is specified
+        """
         if row is None and col is None:
             return
         elif row is None:
@@ -65,6 +71,48 @@ class Profile:
             return self.profile[row]
         else:
             return self.profile[row][col]
+
+    def entropy_score(self):
+        """
+        Get entropy for a list of motifs.
+
+        :return: the sum of the entropy scores for each column in the profile
+        """
+        ent_score = 0
+        for i in range(len(self.get(0))):
+            ent_score += get_entropy(self.get(0, i), self.get(1, i),
+                                     self.get(2, i), self.get(3, i))
+        return ent_score
+
+    def kmer_probability(self, kmer):
+        """
+        Find the probability of a k-mer given a profile.
+
+        :param profile: a matrix of probabilities in the form of a list of lists
+        :param kmer: the DNA string
+        :return: the probability of :param kmer
+        """
+        if len(kmer) != self.n:
+            return
+        prob = self.get(row=pattern_to_number(kmer[0]), col=0)
+        for i in range(1, len(kmer)):
+            prob *= self.get(row=pattern_to_number(kmer[i]), col=i)
+        return prob
+
+    def consensus_string(self):
+        consensus = list()
+        for i in range(self.n):
+            a, c, g, t = get_nucleotide_count(''.join(self.get(col=i)))
+            high_count = max(a, c, g, t)
+            if a == high_count:
+                consensus.append("A")
+            elif c == high_count:
+                consensus.append("C")
+            elif g == high_count:
+                consensus.append("G")
+            elif t == high_count:
+                consensus.append("T")
+        return ''.join(consensus)
 
     def to_string(self):
         string = list()

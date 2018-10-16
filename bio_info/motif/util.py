@@ -11,7 +11,7 @@ def entropy_score(motif_list):
     """
     ent_score = 0
     profile = Profile(motif_list)
-    for i in range(len(profile[0])):
+    for i in range(len(profile.get(0))):
         ent_score += get_entropy(profile.get(0, i), profile.get(1, i),
                                  profile.get(2, i), profile.get(3, i))
     return ent_score
@@ -30,18 +30,18 @@ def mismatch_score(motif_list):
     return total_mismatch
 
 
-def kmer_profile_probability(profile, kmer):
-    """
-    Find the probability of a k-mer given a profile.
-
-    :param profile: a matrix of probabilities in the form of a list of lists
-    :param kmer: the DNA string
-    :return: the probability of :param kmer
-    """
-    prob = profile.get(row=pattern_to_number(kmer[0]), col=0)
-    for i in range(1, len(kmer)):
-        prob *= profile.get(row=pattern_to_number(kmer[i]), col=i)
-    return prob
+# def kmer_profile_probability(profile, kmer):
+#     """
+#     Find the probability of a k-mer given a profile.
+#
+#     :param profile: a matrix of probabilities in the form of a list of lists
+#     :param kmer: the DNA string
+#     :return: the probability of :param kmer
+#     """
+#     prob = profile.get(row=pattern_to_number(kmer[0]), col=0)
+#     for i in range(1, len(kmer)):
+#         prob *= profile.get(row=pattern_to_number(kmer[i]), col=i)
+#     return prob
 
 
 def distance_pattern_strings(pattern, dna_list):
