@@ -2,17 +2,22 @@ from ..util import *
 
 
 class Profile:
-
-    def __init__(self, motif_list):
-        val = motif_list[0][0]
+    # TODO option to build profile from peptides
+    def __init__(self, data=None, k = None):
+        if data is None and k is None:
+            return
+        if data is None:
+            self.profile = self.from_count([[1] * k] * 4)
+            return
+        val = data[0][0]
         if type(val) == str:
-            self.profile = self.from_dna_list(motif_list)
+            self.profile = self.from_dna_list(data)
         elif type(val) == int:
-            self.profile = self.from_count(motif_list)
+            self.profile = self.from_count(data)
         elif type(val) == float:
-            self.profile = motif_list
+            self.profile = data
         self.m = 4
-        self.n = len(motif_list[0])
+        self.n = len(data[0])
 
     def from_dna_list(self, motif_list):
         """
@@ -102,7 +107,8 @@ class Profile:
     def consensus_string(self):
         consensus = list()
         for i in range(self.n):
-            a, c, g, t = get_nucleotide_count(''.join(self.get(col=i)))
+            col = self.get(col=i)
+            a, c, g, t = col[0], col[1], col[2], col[3]
             high_count = max(a, c, g, t)
             if a == high_count:
                 consensus.append("A")
@@ -121,3 +127,12 @@ class Profile:
                 string.append("{:.3f}  ".format(col))
             string.append('\n')
         return ''.join(string).strip()
+
+    def max_entropy(self):
+        """
+        Get the maximum possible entropy based on the size of the profile.
+
+        :return: maximum entropy
+        """
+        uniform_profile = Profile(self.from_count([[1] * self.n] * 4))
+        return uniform_profile.entropy_score()

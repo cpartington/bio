@@ -1,4 +1,5 @@
 import math
+import random
 
 
 def get_nucleotide_count(dna):
@@ -206,3 +207,18 @@ def reverse_complement(dna):
         rc_dna += c_dna[len(c_dna) - i - 1]
 
     return rc_dna
+
+
+# TODO add random DNA / peptide generation class
+def generate(length, count=1, type="dna"):
+    if type == "peptide":
+        data = "ILVFMCAGPTSYWQNHEDKR"
+    else:
+        data = "ACGT"
+    if count == 1:
+        return ''.join(random.choice(data) for i in range(length))
+    else:
+        dna = list()
+        for i in range(count):
+            dna.append(''.join(random.choice(data) for i in range(length)))
+        return dna

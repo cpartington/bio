@@ -25,14 +25,14 @@ def find_profile_probable_kmer(profile, k, dna):
         pattern = dna[i:i+k]
         prob = profile.get(row=pattern_to_number(pattern[0]), col=0)
         for j in range(1, len(pattern)):
-            prob *= profile(row=pattern_to_number(pattern[j]), col=j)
+            prob *= profile.get(row=pattern_to_number(pattern[j]), col=j)
         if prob > top_prob:
             top_prob = prob
             index = i
     return dna[index:index+k]
 
 
-def greedy_motif_search(k, dna_list, scoring='entropy'):
+def greedy_motif_search(dna_list, k, scoring='entropy'):
     t = len(dna_list)
     # Generate initial motif matrix
     best_motifs = list()
@@ -164,7 +164,7 @@ def _gibbs_sampler_(dna_list, k, score, n):
         probabilities = list()
         for m in range(len(removed) - k+1):
             kmer = removed[m:m+k]
-            probabilities.append(kmer_profile_probability(profile, kmer))
+            probabilities.append(profile.kmer_probability(kmer))
         # Choose profile-random k-mer from removed DNA sequence
         j = _biased_random_(len(removed) - k, probabilities)
         motifs[i] = removed[j:j +k]
