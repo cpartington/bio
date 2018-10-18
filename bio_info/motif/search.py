@@ -1,4 +1,3 @@
-import random
 import numpy as np
 
 from progressbar import progressbar
@@ -13,7 +12,7 @@ def find_profile_probable_kmer(profile, k, dna):
     :param profile: a profile matrix stored as a list of lists
     :param k: the length of a k-mer
     :param dna: the DNA sequence to search
-    :return: the k-mer in :param dna: with the highest probability
+    :return: the k-mer in :param dna with the highest probability
     """
     if type(profile) != Profile:
         # TODO throw error
@@ -124,11 +123,12 @@ def gibbs_sampler(dna_list, k, it=20, n=1000, score='entropy'):
     :param dna_list: a list of DNA strings
     :param k: the desired k-mer length
     :param it: the number of sampler iterations
-    :param n: to be deprecated
+    :param n: lower-level iterations; to be deprecated
     :param score: entropy or mismatch count
 
     :return: the set of motifs with the lowest score
     """
+    # TODO fix iteration method
     best_motifs = list()
     best_score = len(dna_list) * k  # impossibly large score
     for i in progressbar(range(it)):

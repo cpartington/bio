@@ -20,6 +20,9 @@ def entropy_score(motif_list):
 def mismatch_score(motif_list):
     """
     Get mismatch count for a list of motifs.
+
+    :param motif_list: a list of DNA strings of equal length
+    :return: the sum of the non-matching nucleotides in each position
     """
     total_mismatch = 0
     for i in range(len(motif_list[0])):
@@ -30,27 +33,13 @@ def mismatch_score(motif_list):
     return total_mismatch
 
 
-# def kmer_profile_probability(profile, kmer):
-#     """
-#     Find the probability of a k-mer given a profile.
-#
-#     :param profile: a matrix of probabilities in the form of a list of lists
-#     :param kmer: the DNA string
-#     :return: the probability of :param kmer
-#     """
-#     prob = profile.get(row=pattern_to_number(kmer[0]), col=0)
-#     for i in range(1, len(kmer)):
-#         prob *= profile.get(row=pattern_to_number(kmer[i]), col=i)
-#     return prob
-
-
 def distance_pattern_strings(pattern, dna_list):
     """
     Finds the sum of the minimum Hamming distances between a DNA
     pattern and a list of longer DNA sequences
 
     :param pattern: a DNA sequence
-    :param dna_list: a list of DNA strings
+    :param dna_list: a list of DNA strings of equal length
 
     :return: the sum of the minimum Hamming distance for each string
     """
@@ -67,6 +56,14 @@ def distance_pattern_strings(pattern, dna_list):
 
 
 def form_consensus_string(motif_list):
+    """
+    Generates a consensus string for each position in a motif matrix using the
+    nucleotide frequencies.
+
+    :param motif_list: a list of DNA strings of equal length
+    :return: a single DNA sequence representing the most common nucleotide for
+             each position in the given list of motifs
+    """
     consensus = list()
     for i in range(len(motif_list[0])):
         a, c, g, t = get_nucleotide_count(''.join(motif[i] for motif in motif_list))

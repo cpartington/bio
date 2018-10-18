@@ -21,7 +21,7 @@ class Profile:
 
     def from_dna_list(self, motif_list):
         """
-        Get profile matrix for a list of motifs.
+        Generate a profile matrix from a list of motifs.
         """
         k = len(motif_list[0])
         t = len(motif_list) + 4
@@ -42,6 +42,9 @@ class Profile:
         return profile
 
     def from_count(self, count_matrix):
+        """
+        Generate a profile matrix from a list of counts.
+        """
         k = len(count_matrix[0])
         profile = list()
         profile.append(list())
@@ -105,6 +108,13 @@ class Profile:
         return prob
 
     def consensus_string(self):
+        """
+        Generates a consensus string for each position in the profile matrix.
+
+        :param motif_list: a list of DNA strings of equal length
+        :return: a single DNA sequence representing the most common nucleotide for
+                 each position in the profile
+        """
         consensus = list()
         for i in range(self.n):
             col = self.get(col=i)
@@ -121,6 +131,12 @@ class Profile:
         return ''.join(consensus)
 
     def to_string(self):
+        """
+        Creates a string version of the profile matrix with each value rounded
+        to three decimal places.
+
+        :return: the profile string
+        """
         string = list()
         for row in self.profile:
             for col in row:
