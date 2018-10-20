@@ -1,3 +1,15 @@
+import random
+
+try:
+    from graph_tool.all import Graph as GTGraph
+    from graph_tool.all import graph_draw
+    graphing = True
+except ImportError:
+    graphing = False
+    GTGraph = None
+    graph_draw = None
+
+
 class Graph:
     def __init__(self):
         self.nodes = list()
@@ -71,6 +83,42 @@ class Graph:
                 edge.dest_node = master_node
         safe_removal = self.remove_nodes(node_list)
         assert(safe_removal is True)
+
+    def draw(self, output_file, node_labels=True, edge_labels=False):
+        """
+        Uses the graph-tool library to generate a graphical version
+        of the graph and saves it to a file. Installation:
+        https://graph-tool.skewed.de/
+
+        :param output_file: the name to save the image as
+        """
+        if graphing is False:
+            print("graph-tool library necessary for this function")
+            print("https://graph-tool.skewed.de/")
+            return
+        graph = GTGraph()
+        v_prop = None
+        e_prop = None
+        if node_labels:
+            v_prop = graph.new_vertex_property("string")
+        if edge_labels:
+            e_prop = graph.new_edge_property("string")
+        vertices = dict()
+
+        for node in self.nodes:
+            v = graph.add_vertex()
+            if node_labels:
+                v_prop[v] = node.label
+            vertices[node.label] = v
+
+        for edge in self.edges:
+            e = graph.add_edge(vertices[edge.from_node.label],
+                               vertices[edge.dest_node.label])
+            if edge_labels:
+                e_prop[e] = edge.label
+
+        graph_draw(graph, vertex_text=v_prop, edge_text=e_prop, vertex_font_size=18,
+                   output_size=(500, 500), output=output_file)
 
 
 class Node:
