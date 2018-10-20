@@ -189,3 +189,35 @@ def de_bruijn(pattern_list):
             g.merge_nodes(label_nodes, label)
 
     return g
+
+
+def eulerian_cycle(graph):
+    unexplored_edge_nodes = list()  # list of nodes with unexplored edges
+    visited_edges = list()  # list of visited edges
+    start_node = graph.nodes[random.randint(0, len(graph.nodes) - 1)]  # random start node
+    while len(visited_edges) < len(graph.edges):
+        edges = [e for e in start_node.edges if e not in visited_edges]
+        if len(edges) == 0:
+            # Pick new starting node
+            if len(unexplored_edge_nodes) == 0:
+                # There is no Eulerian cycle
+                return
+            else:
+                start_node = unexplored_edge_nodes.pop()
+                node_visited_edges = [e for e in start_node.edges if e in visited_edges]
+                index = visited_edges.index(node_visited_edges[0])
+                visited_edges = visited_edges[index:] + visited_edges[:index]
+        elif len(edges) == 1:
+            if start_node in unexplored_edge_nodes:
+                # Remove from list of nodes with unexplored edges
+                unexplored_edge_nodes.remove(start_node)
+            visited_edges.append(edges[0])
+            start_node = edges[0].dest_node
+        elif len(edges) > 1:
+            if start_node not in unexplored_edge_nodes:
+                # Add to list of nodes with unexplored edges
+                unexplored_edge_nodes.append(start_node)
+            edge = edges[random.randint(0, len(edges) - 1)]
+            visited_edges.append(edge)
+            start_node = edge.dest_node
+    return visited_edges
