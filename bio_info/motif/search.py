@@ -15,9 +15,7 @@ def find_profile_probable_kmer(profile, k, dna):
     :return: the k-mer in :param dna with the highest probability
     """
     if type(profile) != Profile:
-        # TODO throw error
-        print("profile must be of type Profile.")
-        return
+        raise TypeError("param profile must be of type Profile")
     index = 0
     top_prob = 0
     for i in range(len(dna) - k+1):
