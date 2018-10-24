@@ -91,6 +91,8 @@ class Graph:
         https://graph-tool.skewed.de/
 
         :param output_file: the name to save the image as
+        :param node_labels: if True, include node labels in graph image
+        :param edge_labels: if True, include edge labels in graph image
         """
         if graphing is False:
             print("graph-tool library necessary for this function")
