@@ -194,27 +194,43 @@ def de_bruijn(pattern_list):
 
 
 def eulerian_cycle(graph):
+    """
+    Find a Eulerian cycle in a graph, if it exists.
+
+    :param graph: a de Bruijn graph of type Graph
+
+    :return: the edges in :param graph forming the cycle
+    """
+    if type(graph) != Graph:
+        raise TypeError("param graph must be of type Graph")
+
     unexplored_edge_nodes = list()  # list of nodes with unexplored edges
     visited_edges = list()  # list of visited edges
     start_node = graph.nodes[random.randint(0, len(graph.nodes) - 1)]  # random start node
+
+    # Start building the cycle
     while len(visited_edges) < len(graph.edges):
         edges = [e for e in start_node.edges if e not in visited_edges]
+
         if len(edges) == 0:
             # Pick new starting node
             if len(unexplored_edge_nodes) == 0:
                 # There is no Eulerian cycle
                 return
             else:
+                # Start with previously explored node with additional unexplored edges
                 start_node = unexplored_edge_nodes.pop()
                 node_visited_edges = [e for e in start_node.edges if e in visited_edges]
                 index = visited_edges.index(node_visited_edges[0])
                 visited_edges = visited_edges[index:] + visited_edges[:index]
+
         elif len(edges) == 1:
             if start_node in unexplored_edge_nodes:
                 # Remove from list of nodes with unexplored edges
                 unexplored_edge_nodes.remove(start_node)
             visited_edges.append(edges[0])
             start_node = edges[0].dest_node
+
         elif len(edges) > 1:
             if start_node not in unexplored_edge_nodes:
                 # Add to list of nodes with unexplored edges
@@ -222,4 +238,5 @@ def eulerian_cycle(graph):
             edge = edges[random.randint(0, len(edges) - 1)]
             visited_edges.append(edge)
             start_node = edge.dest_node
+
     return visited_edges
