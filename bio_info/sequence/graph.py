@@ -60,50 +60,56 @@ def de_bruijn(pattern_list):
     return g
 
 
-def eulerian_cycle(graph):
+def eulerian_path(input_graph):
     """
-    Find a Eulerian cycle in a graph, if it exists.
+    Find a Eulerian path in a graph, if it exists. If it starts and ends
+    at the same node, it's a Eulerian cycle.
 
     :param graph: a de Bruijn graph of type Graph
 
-    :return: the edges in :param graph forming the cycle
+    :return: the edges in :param graph forming the path
     """
-    if type(graph) != Graph:
+    if type(input_graph) != Graph:
         raise TypeError("param graph must be of type Graph")
 
-    unexplored_edge_nodes = list()  # list of nodes with unexplored edges
-    visited_edges = list()  # list of visited edges
-    start_node = graph.nodes[random.randint(0, len(graph.nodes) - 1)]  # random start node
+    graph = input_graph.copy()
 
-    # Start building the cycle
-    while len(visited_edges) < len(graph.edges):
-        edges = [e for e in start_node.edges if e not in visited_edges]
+    in_edges = dict()
+    out_edges = dict()
+    # Initialize dicts
+    for node in graph.nodes:
+        in_edges[node] = 0
+    # Fill dicts
+    for node in graph.nodes:
+        out_edges[node] = len(node.edges)
+        for edge in node.edges:
+            in_edges[edge.dest_node] += 1
+    # Check for unbalanced nodes
+    unbalanced_nodes = [n for n in graph.nodes if in_edges[n] != out_edges[n]]
+    if len(unbalanced_nodes) == 2:
+        if in_edges[unbalanced_nodes[0]] == 0:
+            start = unbalanced_nodes[0]
+        else:
+            start = unbalanced_nodes[1]
+        return _eulerian_path_(start, graph, list())
+    elif len(unbalanced_nodes) == 0:
+        start = graph.nodes[random.randint(0, len(graph.nodes))]
+        return _eulerian_path_(start, graph, list())
+    else:
+        return
 
-        if len(edges) == 0:
-            # Pick new starting node
-            if len(unexplored_edge_nodes) == 0:
-                # There is no Eulerian cycle
-                return
-            else:
-                # Start with previously explored node with additional unexplored edges
-                start_node = unexplored_edge_nodes.pop()
-                node_visited_edges = [e for e in start_node.edges if e in visited_edges]
-                index = visited_edges.index(node_visited_edges[0])
-                visited_edges = visited_edges[index:] + visited_edges[:index]
 
-        elif len(edges) == 1:
-            if start_node in unexplored_edge_nodes:
-                # Remove from list of nodes with unexplored edges
-                unexplored_edge_nodes.remove(start_node)
-            visited_edges.append(edges[0])
-            start_node = edges[0].dest_node
+def _eulerian_path_(graph, node, cycle):
+    cycle.append(node)
+    if len(node.edges) == 0:
+        return cycle
 
-        elif len(edges) > 1:
-            if start_node not in unexplored_edge_nodes:
-                # Add to list of nodes with unexplored edges
-                unexplored_edge_nodes.append(start_node)
-            edge = edges[random.randint(0, len(edges) - 1)]
-            visited_edges.append(edge)
-            start_node = edge.dest_node
+    while len(node.edges) > 0:
+        # Get destination node of first edge
+        tmp_edge = node.edges[0]
+        graph.remove_edge(tmp_edge)
+        # Recursive call
+        sub_cycle = _eulerian_path_(graph, tmp_edge.dest_node, list())
+        cycle = cycle[:1] + sub_cycle + cycle[1:]
 
-    return visited_edges
+    return cycle
