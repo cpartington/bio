@@ -91,10 +91,10 @@ def eulerian_path(input_graph):
             start = unbalanced_nodes[0]
         else:
             start = unbalanced_nodes[1]
-        return _eulerian_path_(start, graph, list())
+        return _eulerian_path_(graph, start, list())
     elif len(unbalanced_nodes) == 0:
         start = graph.nodes[random.randint(0, len(graph.nodes))]
-        return _eulerian_path_(start, graph, list())
+        return _eulerian_path_(graph, start, list())
     else:
         return
 
