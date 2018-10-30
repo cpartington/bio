@@ -98,6 +98,15 @@ class Graph:
             g.add_edge(from_node, dest_node, edge.label)
         return g
 
+    def combine_simple_nodes(self):
+        pass
+
+    def remove_tips(self):
+        pass
+
+    def remove_bubbles(self):
+        pass
+
     def draw(self, output_file, node_labels=True, edge_labels=False):
         """
         Uses the graph-tool library to generate a graphical version
