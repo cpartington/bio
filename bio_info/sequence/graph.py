@@ -24,11 +24,15 @@ def overlap_graph(pattern_list):
     return adjacencies
 
 
-def de_bruijn(pattern_list, use_rev_c=False):
+def de_bruijn(pattern_list,  from_pairs=False, sep=',', use_rev_c=False):
     """
     Builds a De Bruijn graph from a given set of patterns.
 
     :param pattern_list: a list of DNA sequences
+    :param from_pairs: if True, the input strings are treated as
+           tuples and labels are created as tuples
+    :param sep: only used if :param from_pairs is true; identifies
+           the separator of the pairs
     :param use_rev_c: if True, find reverse complement of each
            string in the pattern list and add the associated edge
            and nodes to the graph using the lexicographically-
@@ -42,11 +46,19 @@ def de_bruijn(pattern_list, use_rev_c=False):
 
     # Add the k-mers
     for i in range(len(pattern_list)):
-        dna_str = pattern_list[i]
-        if use_rev_c:
-            dna_str = min(dna_str, reverse_complement(dna_str))
-        prefix = g.add_node(dna_str[:-1])
-        suffix = g.add_node(dna_str[1:])
+        if from_pairs:
+            dna_str = pattern_list[i].split(sep)
+            if use_rev_c:
+                dna_str[0] = min(dna_str[0], reverse_complement(dna_str[0]))
+                dna_str[1] = min(dna_str[0], reverse_complement(dna_str[1]))
+            prefix = g.add_node('\n'.join([dna_str[0][:-1], dna_str[1][:-1]]))
+            suffix = g.add_node('\n'.join([dna_str[0][1:], dna_str[1][1:]]))
+        else:
+            dna_str = pattern_list[i]
+            if use_rev_c:
+                dna_str = min(dna_str, reverse_complement(dna_str))
+            prefix = g.add_node(dna_str[:-1])
+            suffix = g.add_node(dna_str[1:])
         g.add_edge(prefix, suffix, dna_str)
 
         # Add to label count dictionary
@@ -109,10 +121,17 @@ def eulerian_path(input_graph):
 
 def _eulerian_path_(graph, node, cycle):
     cycle.append(node)
-    if len(node.edges) == 0:
-        return cycle
 
     while len(node.edges) > 0:
+        # No recursion necessary if no branching
+        while len(node.edges) == 1:
+            tmp_edge = node.edges[0]
+            graph.remove_edge(tmp_edge)
+            node = tmp_edge.dest_node
+            cycle.append(node)
+            # Check for more nodes
+            if len(node.edges) == 0:
+                return cycle
         # Get destination node of first edge
         tmp_edge = node.edges[0]
         graph.remove_edge(tmp_edge)
