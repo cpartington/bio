@@ -29,6 +29,8 @@ class Graph:
         edge = Edge(from_node, dest_node, label)
         self.edges.append(edge)
         from_node.edges.append(edge)
+        from_node.out_degree += 1
+        dest_node.in_degree += 1
 
     def remove_node(self, node):
         """
@@ -44,6 +46,8 @@ class Graph:
         for edge in self.edges:
             if edge.dest_node == node or edge.from_node == node:
                 self.edges.remove(edge)
+                edge.dest_node.in_degree -= 1
+                edge.from_node.out_degree -= 1
                 no_change = False
         self.nodes.remove(node)
         return no_change
@@ -77,13 +81,17 @@ class Graph:
             if edge.from_node in node_list:
                 edge.from_node = master_node
                 master_node.edges.append(edge)
+                master_node.out_degree += 1
             if edge.dest_node in node_list:
                 edge.dest_node = master_node
+                master_node.in_degree += 1
         safe_removal = self.remove_nodes(node_list)
         assert(safe_removal is True)
 
     def remove_edge(self, edge):
         edge.from_node.edges.remove(edge)
+        edge.dest_node.in_degree -= 1
+        edge.from_node.out_degree -= 1
         self.edges.remove(edge)
 
     def copy(self):
@@ -99,7 +107,17 @@ class Graph:
         return g
 
     def combine_simple_nodes(self):
-        pass
+        for edge in self.edges:
+            print("edge: {}".format(edge.label))
+            if edge.dest_node.in_degree == 1 and edge.dest_node.out_degree == 1:
+                dest_node_dest = edge.dest_node.edges[0].dest_node
+                self.merge_nodes([edge.from_node, edge.dest_node, dest_node_dest],
+                                 '{}{}{}'.format(edge.from_node.label[0], edge.dest_node.label[0],
+                                               dest_node_dest.label))
+            elif edge.from_node.in_degree == 0 and edge.from_node.out_degree == 1 \
+                    and edge.dest_node.in_degree == 1:
+                self.merge_nodes([edge.from_node, edge.dest_node],
+                                 '{}{}'.format(edge.from_node.label[:-1], edge.dest_node.label[-1]))
 
     def remove_tips(self):
         pass
@@ -150,6 +168,8 @@ class Node:
     def __init__(self, label=None):
         self.label = label
         self.edges = list()
+        self.in_degree = 0
+        self.out_degree = 0
 
 
 class Edge:
