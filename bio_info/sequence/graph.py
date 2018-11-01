@@ -51,8 +51,8 @@ def de_bruijn(pattern_list,  from_pairs=False, sep=',', use_rev_c=False):
             if use_rev_c:
                 dna_str[0] = min(dna_str[0], reverse_complement(dna_str[0]))
                 dna_str[1] = min(dna_str[0], reverse_complement(dna_str[1]))
-            prefix = g.add_node('\n'.join([dna_str[0][:-1], dna_str[1][:-1]]))
-            suffix = g.add_node('\n'.join([dna_str[0][1:], dna_str[1][1:]]))
+            prefix = g.add_node(','.join([dna_str[0][:-1], dna_str[1][:-1]]))
+            suffix = g.add_node(','.join([dna_str[0][1:], dna_str[1][1:]]))
         else:
             dna_str = pattern_list[i]
             if use_rev_c:
