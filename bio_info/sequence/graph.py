@@ -87,14 +87,15 @@ def de_bruijn(pattern_list, node_based=False, from_pairs=False, sep=',', use_rev
 
 def de_bruijn_from_nodes(reads):
     g = Graph()
+    label_count = dict()
     prefixes = dict()
     suffixes = dict()
 
     # Add nodes
     for i in range(len(reads)):
         new_node = g.add_node(reads[i])
-        prefix = reads[i:-1]
-        suffix = reads[1:]
+        prefix = reads[i][:-1]
+        suffix = reads[i][1:]
         if prefix in prefixes:
             prefixes[prefix] += [new_node]
         else:
@@ -103,6 +104,15 @@ def de_bruijn_from_nodes(reads):
             suffixes[suffix] += [new_node]
         else:
             suffixes[suffix] = [new_node]
+        if new_node.label in label_count:
+            label_count[new_node.label] += [new_node]
+        else:
+            label_count[new_node.label] = [new_node]
+    # # Merge nodes
+    # for label in label_count.keys():
+    #     label_nodes = label_count.get(label)
+    #     if len(label_nodes) > 1:
+    #         g.merge_nodes(label_nodes, label)
     # Add edges
     for suffix, nodes in suffixes.items():
         if suffix in prefixes:
