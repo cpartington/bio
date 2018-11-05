@@ -1,3 +1,5 @@
+import traceback
+
 try:
     from graph_tool.all import Graph as GTGraph
     from graph_tool.all import graph_draw
@@ -31,6 +33,7 @@ class Graph:
         from_node.edges.append(edge)
         from_node.out_degree += 1
         dest_node.in_degree += 1
+        return edge
 
     def remove_node(self, node):
         """
@@ -86,7 +89,36 @@ class Graph:
                 edge.dest_node = master_node
                 master_node.in_degree += 1
         safe_removal = self.remove_nodes(node_list)
-        assert(safe_removal is True)
+        return safe_removal
+
+    def merge_edges(self, edge_list, merge_nodes=False):
+        """
+        Merges a list of edges by merging the associated nodes
+        if desired and then updating the edge label.
+
+        :param edge_list: a list of edges to merge
+        :param merge_nodes
+
+        :return the new merged node
+        """
+        # TODO finish function
+        new_label = []
+        if merge_nodes:
+            nodes = list()
+        for edge in edge_list:
+            new_label.append(edge.label[0])
+            if merge_nodes:
+                nodes.append(edge.from_node)
+        new_label.append(edge_list[-1].label[1:])
+        if merge_nodes:
+            nodes.append(edge_list[-1].dest_node)
+            # Add new master node
+            # Remove any edges pointing within the merged nodes
+        # Add one master edge pointing to itself
+        new_edge = self.add_edge(edge_list[0].from_node, edge_list[-1].dest_node, "".join(new_label))
+        for edge in edge_list:
+            self.remove_edge(edge)
+        return new_edge
 
     def remove_edge(self, edge):
         edge.from_node.edges.remove(edge)

@@ -24,11 +24,13 @@ def overlap_graph(pattern_list):
     return adjacencies
 
 
-def de_bruijn(pattern_list,  from_pairs=False, sep=',', use_rev_c=False):
+def de_bruijn(pattern_list, node_based=False, from_pairs=False, sep=',', use_rev_c=False):
     """
     Builds a De Bruijn graph from a given set of patterns.
 
     :param pattern_list: a list of DNA sequences
+    :param node_based: if True, each k-mer is added as a node
+           rather than an edge
     :param from_pairs: if True, the input strings are treated as
            tuples and labels are created as tuples
     :param sep: only used if :param from_pairs is true; identifies
@@ -43,6 +45,9 @@ def de_bruijn(pattern_list,  from_pairs=False, sep=',', use_rev_c=False):
     """
     g = Graph()
     label_count = dict()
+
+    if node_based:
+        return de_bruijn_from_nodes(pattern_list)
 
     # Add the k-mers
     for i in range(len(pattern_list)):
@@ -77,6 +82,34 @@ def de_bruijn(pattern_list,  from_pairs=False, sep=',', use_rev_c=False):
         if len(label_nodes) > 1:
             g.merge_nodes(label_nodes, label)
 
+    return g
+
+
+def de_bruijn_from_nodes(reads):
+    g = Graph()
+    prefixes = dict()
+    suffixes = dict()
+
+    # Add nodes
+    for i in range(len(reads)):
+        new_node = g.add_node(reads[i])
+        prefix = reads[i:-1]
+        suffix = reads[1:]
+        if prefix in prefixes:
+            prefixes[prefix] += [new_node]
+        else:
+            prefixes[prefix] = [new_node]
+        if suffix in suffixes:
+            suffixes[suffix] += [new_node]
+        else:
+            suffixes[suffix] = [new_node]
+    # Add edges
+    for suffix, nodes in suffixes.items():
+        if suffix in prefixes:
+            prefix_nodes = prefixes.get(suffix)
+            for s_node in nodes:
+                for p_node in prefix_nodes:
+                    g.add_edge(s_node, p_node)
     return g
 
 
