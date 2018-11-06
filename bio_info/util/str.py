@@ -93,7 +93,7 @@ def _number_to_symbol_(num):
         return 'T'
 
 
-def read_fasta(file_name, join=True):
+def read_fasta(file_name, join=False):
     """
     Reads a fasta file and returns a single DNA sequence.
 
