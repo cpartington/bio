@@ -15,6 +15,8 @@ class Graph:
         self.nodes = list()
         self.edges = list()
 
+    """ Graph Operations """
+
     def add_node(self, label):
         node = Node(label)
         self.nodes.append(node)
@@ -139,17 +141,21 @@ class Graph:
         return g
 
     def combine_simple_nodes(self):
-        for edge in self.edges:
-            print("edge: {}".format(edge.label))
-            if edge.dest_node.in_degree == 1 and edge.dest_node.out_degree == 1:
-                dest_node_dest = edge.dest_node.edges[0].dest_node
-                self.merge_nodes([edge.from_node, edge.dest_node, dest_node_dest],
-                                 '{}{}{}'.format(edge.from_node.label[0], edge.dest_node.label[0],
-                                               dest_node_dest.label))
-            elif edge.from_node.in_degree == 0 and edge.from_node.out_degree == 1 \
-                    and edge.dest_node.in_degree == 1:
-                self.merge_nodes([edge.from_node, edge.dest_node],
-                                 '{}{}'.format(edge.from_node.label[:-1], edge.dest_node.label[-1]))
+        extra_edges = list()
+        paths = [path for path in self.maximal_nonbranching_paths() if len(path) > 1]
+        for path in paths:
+            from_node = path[0].from_node
+            for edge in path:
+                # Update edge to be merged k-mer
+                edge.dest_node.edges[0].label = "".join([edge.label[0], edge.dest_node.edges[0].label])
+                # Get new node label
+                new_label = "".join([from_node.label[0], edge.dest_node.label])
+                # Merge source node and destination node
+                new_node = self.merge_nodes([from_node, edge.dest_node], new_label)
+                extra_edges.append(edge)
+                from_node = new_node
+        for edge in extra_edges:
+            self.remove_edge(edge)
 
     def remove_tips(self):
         pass
@@ -194,6 +200,30 @@ class Graph:
 
         graph_draw(graph, vertex_text=v_prop, edge_text=e_prop, vertex_font_size=18,
                    output_size=(500, 500), output=output_file)
+
+    """ Graph Uses """
+
+    def maximal_nonbranching_paths(self):
+        """
+        Finds maximal non-branching paths in the graph. A non-branching
+        path is a path where the middle nodes have an in-degree and out-
+        degree of one.
+
+        :return: the list of all maximal non-branching paths through the
+                 graph, in the form of a list of lists of Nodes
+        """
+        paths = []
+        for node in self.nodes:
+            if node.in_degree != 1 or node.out_degree != 1:
+                if node.out_degree > 0:
+                    for edge in node.edges:
+                        non_b_path = [edge]
+                        new_node = edge.dest_node
+                        while new_node.in_degree == new_node.out_degree == 1:
+                            non_b_path += [new_node.edges[0]]
+                            new_node = new_node.edges[0].dest_node
+                        paths += [non_b_path]
+        return paths
 
 
 class Node:

@@ -42,3 +42,26 @@ def reconstruct_from_pairs(dna_list, k, d, sep=','):
         seq.append(node.label.split(',')[1][0])
     seq.append(path[-1].label.split(',')[1])
     return "".join(seq)
+
+
+def generate_contigs(reads):
+    """
+    Generate contigs from a given set of DNA reads.
+    Notes:
+
+    :param reads: a list of DNA string reads
+    :return: the list of created contigs
+    """
+    g = de_bruijn(reads)
+    paths = g.maximal_nonbranching_paths()
+    contigs = list()
+    for path in paths:
+        if len(path) > 1:
+            contig = list()
+            for edge in path:
+                contig.append(edge.label[0])
+            contig.append(path[-1].label[1:])
+            contigs.append("".join(contig))
+        else:
+            contigs.append(path[0].label)
+    return contigs
