@@ -1,2 +1,2 @@
 from .graph import overlap_graph, de_bruijn, eulerian_path
-from .util import kmer_composition
+from .util import kmer_composition, n_50

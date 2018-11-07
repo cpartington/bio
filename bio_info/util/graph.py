@@ -123,6 +123,7 @@ class Graph:
         return new_edge
 
     def merge_equal_edges(self):
+        # TODO add multiplicity option to graph
         for node in self.nodes:
             i = 0
             while i < len(node.edges):
