@@ -122,6 +122,15 @@ class Graph:
             self.remove_edge(edge)
         return new_edge
 
+    def merge_equal_edges(self):
+        for node in self.nodes:
+            i = 0
+            while i < len(node.edges):
+                equal_edges = [e for e in node.edges if e.dest_node == node.edges[i].dest_node]
+                for edge in equal_edges[1:]:
+                    self.remove_edge(edge)
+                i += 1
+
     def remove_edge(self, edge):
         edge.from_node.edges.remove(edge)
         edge.dest_node.in_degree -= 1
@@ -163,6 +172,8 @@ class Graph:
     def remove_bubbles(self):
         pass
 
+    """ Graph Utilization """
+
     def draw(self, output_file, node_labels=True, edge_labels=False):
         """
         Uses the graph-tool library to generate a graphical version
@@ -189,19 +200,25 @@ class Graph:
         for node in self.nodes:
             v = graph.add_vertex()
             if node_labels:
-                v_prop[v] = node.label
+                if len(node.label) > 10:
+                    label = "{}...{}".format(node.label[:3], node.label[-3:])
+                    v_prop[v] = label
+                else:
+                    v_prop[v] = node.label
             vertices[node.label] = v
 
         for edge in self.edges:
             e = graph.add_edge(vertices[edge.from_node.label],
                                vertices[edge.dest_node.label])
             if edge_labels:
-                e_prop[e] = edge.label
+                if len(edge.label) > 15:
+                    label = "{}...{}".format(edge.label[:4], edge.label[-4:])
+                    e_prop[e] = label
+                else:
+                    e_prop[e] = edge.label
 
         graph_draw(graph, vertex_text=v_prop, edge_text=e_prop, vertex_font_size=18,
-                   output_size=(500, 500), output=output_file)
-
-    """ Graph Uses """
+                   output_size=(5000, 5000), output=output_file, fit_view=True)
 
     def maximal_nonbranching_paths(self):
         """

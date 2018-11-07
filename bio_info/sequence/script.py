@@ -10,13 +10,12 @@ def reconstruct(dna_list):
 
     :return: the combined DNA sequence
     """
-    print("Building graph...")
     g = de_bruijn(dna_list)
 
-    print("Finding path...")
     path = eulerian_path(g)
+    if path is None:
+        return
 
-    print("Building sequence")
     seq_list = list()
     for node in path:
         seq_list.append(node.label[0])
