@@ -182,19 +182,23 @@ def find_approximate_match_indexes(dna, pattern, d):
     return indexes
 
 
-def reverse_complement(dna):
+def reverse_complement(dna, rna=False):
     """
     Find the reverse complement of a given DNA string.
 
     :param dna: the string of DNA
     :return: the reverse complement of :param dna
     """
-    tmp = "U"
+    tmp = "Z"
 
     # Swap A & T
     c_dna = dna.replace("A", tmp)
-    c_dna = c_dna.replace("T", "A")
-    c_dna = c_dna.replace(tmp, "T")
+    if rna:
+        c_dna = c_dna.replace("U", "A")
+        c_dna = c_dna.replace(tmp, "U")
+    else:
+        c_dna = c_dna.replace("T", "A")
+        c_dna = c_dna.replace(tmp, "T")
 
     # Swap C & G
     c_dna = c_dna.replace("C", tmp)
