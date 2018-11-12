@@ -18,6 +18,15 @@ rna_amino_dict = {
 }
 
 
+amino_weight_dict = {
+    "G": 57, "A": 71, "S": 87, "P": 97,
+    "V": 99, "T": 101, "C": 103, "I": 113,
+    "L": 113, "N": 114, "D": 115, "K": 128,
+    "Q": 128, "E": 129, "M": 131, "H": 137,
+    "F": 147, "R": 146, "Y": 163, "W": 186
+}
+
+
 def kmer_composition(k, dna, sort=False):
     kmers = list()
     for i in range(len(dna) - k+1):
@@ -45,3 +54,10 @@ def rna_to_amino(rna):
         amino.append(rna_amino_dict[rna[i:i + 3]])
         i += 3
     return ''.join(amino)
+
+
+def get_peptide_mass(peptide):
+    mass = 0
+    for amino in peptide:
+        mass += amino_weight_dict[amino]
+    return mass
