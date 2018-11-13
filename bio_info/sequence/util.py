@@ -1,3 +1,8 @@
+amino_acids = ["G", "A", "S", "P", "V", "T", "C", "I",
+               "L", "N", "D", "K", "Q", "E", "M", "H",
+               "F", "R", "Y", "W"]
+
+
 rna_amino_dict = {
     "AAA": "K", "AAC": "N", "AAG": "K", "AAU": "N",
     "ACA": "T", "ACC": "T", "ACG": "T", "ACU": "T",
