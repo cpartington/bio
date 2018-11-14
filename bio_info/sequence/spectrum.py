@@ -2,19 +2,19 @@ import math
 from .util import amino_acids
 
 
-amino_weight_dict = {
+amino_mass_dict = {
     "G": 57, "A": 71, "S": 87, "P": 97,
     "V": 99, "T": 101, "C": 103, "I": 113,
     "L": 113, "N": 114, "D": 115, "K": 128,
     "Q": 128, "E": 129, "M": 131, "H": 137,
-    "F": 147, "R": 146, "Y": 163, "W": 186
+    "F": 147, "R": 156, "Y": 163, "W": 186
 }
 
 
 def get_peptide_mass(peptide):
     mass = 0
     for amino in peptide:
-        mass += amino_weight_dict[amino]
+        mass += amino_mass_dict[amino]
     return mass
 
 
