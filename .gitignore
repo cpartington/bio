@@ -1,6 +1,7 @@
 # Python compiled / optimized files
 __pycache__/
 *.py[cod]
+.vscode
 
 # XML files
 .idea/

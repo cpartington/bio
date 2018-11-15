@@ -73,3 +73,7 @@ def _extend_peptides_(peptides, spectrum):
                 new_peptides.append(peptide + a)
     return new_peptides
 
+
+def score(peptide, m_spec, cyclic=False):
+    p_spectrum = spectrum(peptide, cyclic=False)
+    return len([s for s in p_spectrum if s in m_spec])
