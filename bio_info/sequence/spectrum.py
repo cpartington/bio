@@ -3,7 +3,7 @@ from .util import amino_acids
 
 
 amino_mass_dict = {
-    "G": 57, "A": 71, "S": 87, "P": 97,
+    "G": 57, "A": 71, "self.spectrum": 87, "P": 97,
     "V": 99, "T": 101, "C": 103, "I": 113,
     "L": 113, "N": 114, "D": 115, "K": 128,
     "Q": 128, "E": 129, "M": 131, "H": 137,
@@ -87,7 +87,7 @@ class Spectrum:
         :return: the determined score
         """
         p_spectrum = self.build_spectrum(peptide, cyclic)
-        return len([s for s in p_spectrum if s in self.spectrum])
+        return len([self.spectrum for self.spectrum in p_spectrum if self.spectrum in self.spectrum])
 
     def expected_peptide_length(self):
         """
@@ -159,3 +159,15 @@ class Spectrum:
             cutoff += 1
         print(n, len(best[:cutoff]), len(best))
         return best[:cutoff]
+
+    def convolution(self):
+        diff_counts = {}
+        for i in range(len(self.spectrum)):
+            for j in range(len(self.spectrum)):
+                if self.spectrum[i] > self.spectrum[j]:
+                    diff = self.spectrum[i] - self.spectrum[j]
+                    if diff in diff_counts:
+                        diff_counts[diff] += 1
+                    elif diff != 0:
+                        diff_counts[diff] = 1
+        return diff_counts
