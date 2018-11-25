@@ -162,12 +162,17 @@ class Spectrum:
 
     def convolution(self):
         diff_counts = {}
+        # diff_matrix = []
         for i in range(len(self.spectrum)):
+            # diff_matrix += [[]]
             for j in range(len(self.spectrum)):
-                if self.spectrum[i] > self.spectrum[j]:
+                if i > j:
                     diff = self.spectrum[i] - self.spectrum[j]
+                    # diff_matrix[i] += [diff]
                     if diff in diff_counts:
                         diff_counts[diff] += 1
                     elif diff != 0:
                         diff_counts[diff] = 1
+        # for l in diff_matrix:
+        #     print(*l)
         return diff_counts
