@@ -10,11 +10,25 @@ amino_mass_dict = {
     "F": 147, "R": 156, "Y": 163, "W": 186
 }
 
-# TODO add documentation
+
 def get_peptide_mass(peptide):
+    """
+    Gets the mass of a given peptide.
+
+    :param peptide: a peptide in string or list form; can
+           be a combination of integer masses and peptide
+           character representations
+
+    :return: the total mass of the peptide
+    """
     mass = 0
+    if isinstance(peptide, int):
+        return peptide
     for amino in peptide:
-        mass += amino_mass_dict[amino]
+        if isinstance(amino, int):
+            mass += amino
+        else:
+            mass += amino_mass_dict[amino]
     return mass
 
 
@@ -60,6 +74,9 @@ class Spectrum:
         :return: the created spectrum as a list of integers
         """
         masses = [0]
+        if isinstance(peptide, int):
+            masses += [peptide]
+            return masses
         for i in range(len(peptide)):
             masses += [masses[i] + get_peptide_mass(peptide[i])]
         spec = [0]
@@ -87,7 +104,13 @@ class Spectrum:
         :return: the determined score
         """
         p_spectrum = self.build_spectrum(peptide, cyclic)
-        return len([self.spectrum for self.spectrum in p_spectrum if self.spectrum in self.spectrum])
+        s_spectrum = self.spectrum[:]
+        common = 0
+        for p in p_spectrum:
+            if p in s_spectrum:
+                common += 1
+                s_spectrum.remove(p)
+        return common
 
     def expected_peptide_length(self):
         """
