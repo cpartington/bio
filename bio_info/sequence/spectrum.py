@@ -46,17 +46,17 @@ def expected_peptide_length(spectrum):
 
 class Spectrum:
     """
-    A class to do mass spectrum operations.
+    A class to do mass spec operations.
     """
     def __init__(self, spectrum, from_peptide=False, cyclic=False):
         """
-        Initializes spectrum class with already-existing spectrum or creates a
-        new spectrum using a provided peptide.
+        Initializes spec class with already-existing spec or creates a
+        new spec using a provided peptide.
 
-        :param spectrum: the data, either a spectrum or a peptide
-        :param from_peptide: if True, treat :param spectrum as a peptide
+        :param spectrum: the data, either a spec or a peptide
+        :param from_peptide: if True, treat :param spec as a peptide
         :param cyclic: only used if :param from_peptide is True; determines
-               how to build the spectrum from the provided peptide (cyclic or
+               how to build the spec from the provided peptide (cyclic or
                linear)
         """
         if from_peptide:
@@ -66,12 +66,12 @@ class Spectrum:
 
     def build_spectrum(self, peptide, cyclic=False):
         """
-        Builds a spectrum given a peptide.
+        Builds a spec given a peptide.
 
-        :param peptide: the peptide to build a spectrum for
+        :param peptide: the peptide to build a spec for
         :param cyclic: if True, treat the string as circular
 
-        :return: the created spectrum as a list of integers
+        :return: the created spec as a list of integers
         """
         masses = [0]
         if isinstance(peptide, int):
@@ -93,13 +93,13 @@ class Spectrum:
 
     def score(self, peptide, cyclic=False):
         """
-        Gives a score of a peptide against the spectrum, where the
+        Gives a score of a peptide against the spec, where the
         score is calculated as the number of common masses between the
-        peptide and the spectrum.
+        peptide and the spec.
 
         :param peptide: the peptide string to generate a score for
         :param cyclic: whether to consider the peptide cyclic when
-               generating its spectrum
+               generating its spec
 
         :return: the determined score
         """
@@ -115,7 +115,7 @@ class Spectrum:
     def expected_peptide_length(self):
         """
         Uses the quadratic formula to find an approximation of the
-        expected peptide length given the size of the spectrum.
+        expected peptide length given the size of the spec.
 
         :return: expected peptide length
         """
